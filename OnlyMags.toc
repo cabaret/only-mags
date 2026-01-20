@@ -1,0 +1,7 @@
+## Interface: 110207,120000,120001
+## Title: OnlyMags
+## Author: Carrots of Silvermoon
+## Version: 1.0.0
+## SavedVariables: OnlyMagsDB
+
+OnlyMags.lua
