@@ -5,7 +5,7 @@ local addonName = ...
 OnlyMagsDB = OnlyMagsDB or {}
 
 local defaults = {
-	petName = "Quack",
+	petName = "Mags",
 	enabled = true,
 }
 
@@ -58,3 +58,21 @@ frame:SetScript("OnEvent", function(_, event, arg1)
 		C_Timer.After(2, SummonPet)
 	end
 end)
+
+SLASH_ONLYMAGS1 = "/mags"
+
+SlashCmdList["ONLYMAGS"] = function(msg)
+	local cmd = msg:lower():trim()
+
+	if cmd == "enable" then
+		OnlyMagsDB.enabled = true
+		print("|cffff69b4OnlyMags|r: Enabled")
+		SummonPet()
+	elseif cmd == "disable" then
+		OnlyMagsDB.enabled = false
+		print("|cffff69b4OnlyMags|r: Disabled")
+		C_PetJournal.SummonPetByGUID(C_PetJournal.GetSummonedPetGUID())
+	else
+		print("|cffff69b4OnlyMags|r: /mags enable | disable")
+	end
+end
