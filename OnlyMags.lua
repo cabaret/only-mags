@@ -76,3 +76,62 @@ SlashCmdList["ONLYMAGS"] = function(msg)
 		print("|cffff69b4OnlyMags|r: /mags enable | disable")
 	end
 end
+
+local function SetPetAsPermanent(displayName)
+	if not displayName then
+		return
+	end
+	OnlyMagsDB.petName = displayName
+	print("|cffff69b4OnlyMags|r: Pet set to |cfffff000" .. displayName .. "|r")
+end
+
+local function ClearPermanentPet()
+	OnlyMagsDB.petName = ""
+	print("|cffff69b4OnlyMags|r: Cleared.")
+end
+
+local function SetupPetJournalMenu()
+	if not (Menu and Menu.ModifyMenu) then
+		return
+	end
+
+	Menu.ModifyMenu("MENU_PET_COLLECTION_PET", function(ownerRegion, rootDescription, contextData)
+		local petGUID = ownerRegion and ownerRegion.petID
+		if not petGUID then
+			return
+		end
+
+		local _, customName, _, _, _, _, _, name = C_PetJournal.GetPetInfoByPetID(petGUID)
+		local displayName = customName or name
+		if not displayName then
+			return
+		end
+
+		rootDescription:CreateDivider()
+
+		if OnlyMagsDB.petName == displayName then
+			rootDescription:CreateButton("Clear permanent pet", function()
+				ClearPermanentPet()
+				C_PetJournal.SummonPetByGUID(C_PetJournal.GetSummonedPetGUID())
+			end)
+		else
+			rootDescription:CreateButton("Set permanent pet", function()
+				SetPetAsPermanent(displayName)
+				C_PetJournal.SummonPetByGUID(petGUID)
+			end)
+		end
+	end)
+end
+
+local menuFrame = CreateFrame("Frame")
+menuFrame:RegisterEvent("ADDON_LOADED")
+menuFrame:SetScript("OnEvent", function(self, _, addon)
+	if addon == "Blizzard_Collections" then
+		C_Timer.After(0.1, SetupPetJournalMenu)
+		self:UnregisterEvent("ADDON_LOADED")
+	end
+end)
+
+if C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
+	C_Timer.After(0.1, SetupPetJournalMenu)
+end
