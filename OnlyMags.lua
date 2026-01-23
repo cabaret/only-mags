@@ -39,12 +39,12 @@ local function SummonPet()
 	end
 end
 
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("ADDON_LOADED")
-frame:RegisterEvent("PLAYER_STARTED_MOVING")
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+local magsFrame = CreateFrame("Frame")
+magsFrame:RegisterEvent("ADDON_LOADED")
+magsFrame:RegisterEvent("PLAYER_STARTED_MOVING")
+magsFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-frame:SetScript("OnEvent", function(_, event, arg1)
+magsFrame:SetScript("OnEvent", function(_, event, arg1)
 	if event == "ADDON_LOADED" and arg1 == addonName then
 		for k, v in pairs(defaults) do
 			if OnlyMagsDB[k] == nil then
@@ -134,4 +134,25 @@ end)
 
 if C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
 	C_Timer.After(0.1, SetupPetJournalMenu)
+end
+
+local function ApplyCDMOverrides()
+	if CooldownViewerConstants then
+		CooldownViewerConstants.ITEM_AURA_COLOR = CreateColor(0.3, 0.7, 0.2, 0.9)
+	end
+end
+
+hooksecurefunc("CooldownFrame_Set", function(cooldown, _, _, _, drawEdge)
+	if drawEdge and cooldown:GetParent() then
+		local parent = cooldown:GetParent()
+		if parent.GetSpellID and parent.GetBaseSpellID then
+			cooldown:SetEdgeTexture("Interface\\AddOns\\OnlyMags\\edge-green")
+		end
+	end
+end)
+
+if C_AddOns.IsAddOnLoaded("Blizzard_CooldownViewer") then
+	ApplyCDMOverrides()
+else
+	EventUtil.ContinueOnAddOnLoaded("Blizzard_CooldownViewer", ApplyCDMOverrides)
 end
