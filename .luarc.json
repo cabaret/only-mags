@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime": {
+    "version": "Lua 5.1",
+    "special": {
+      "SlashCmdList": "global"
+    }
+  },
+  "diagnostics": {
+    "globals": [
+      "C_PetJournal",
+      "C_Timer",
+      "C_AddOns",
+      "CreateFrame",
+      "SlashCmdList",
+      "Menu",
+      "SLASH_ONLYMAGS1"
+    ]
+  },
+  "workspace": {
+    "library": [],
+    "checkThirdParty": false
+  }
+}
